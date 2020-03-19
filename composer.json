@@ -19,7 +19,7 @@
         "symfony/maker-bundle": "^1.14",
         "symfony/web-server-bundle": "4.4.*"
     },
-    "config": {xr
+    "config": {
         "preferred-install": {
             "*": "dist"
         },
