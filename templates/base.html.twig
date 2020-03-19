@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <style type="text/css">
+            body {
+                margin: 0;
+                background: #F2F2F2;
+            }
+            main {
+                margin: 10px 10%;
+                background: white;
+                padding: 20px;
+            }
+            p {
+                font-size: 18px;
+            }
+            h1 {
+                text-align: center;
+                background:black;
+                color:white;
+                margin: 0;
+                padding: 10px 0 10px 0;
+            }
+            .item {
+                border: solid 1px black;
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 5px;
+            }
+            .item_container {
+                list-style: none;
+                padding: 0;
+            }
+            .error_container {
+                list-style: none;
+                padding: 0;
+            }
+            .error {
+                background: red;
+                color: white;
+                margin: 0;
+                padding: 10px;
+                display: inline-block;
+                border-radius: 20px;
+            }
+            .error>p {
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Pôle emploi de votre commune</h1>
+        </header>
+        <main>
+            <p>Entrez le code postal de votre commune pour accéder à la liste des bureaux Pôle emploi rattacher à votre zone.</p>
+            <ul class="error_container">
+                {% for error in errors %}
+                    <li class="error">
+                        <p>{{ error }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+            <form action="/" method="post" name="form">
+                <label for="city">Ville</label>
+                <input id="city" type="text" placeholder="Paris" name="city">
+                <label for="postal">Code Postal</label>
+                <input type="number" required placeholder="75001" name="postal">
+                <button type="submit">Rechercher</button>
+            </form>
+
+            <br>
+
+            {% if places %}
+                <p>{{ places|length }} résultats pour {{ postal }}</p>
+                <ul class="item_container">
+                    {% for place in places %}
+                        <li class="item">
+                            <h3>{{ place["properties"]["nom"] }}</h3>
+                            <p>
+                                Addresse:
+                                {% for addressLines in place["properties"]["adresses"][0]["lignes"] %}
+                                    {{ addressLines }}
+                                {% endfor %}
+                                , {{ place["properties"]["adresses"][0]["commune"] }} {{ place["properties"]["adresses"][0]["codePostal"] }}
+                            </p>
+                            <p>
+                                Téléphone: {{ place["properties"]["telephone"] }}
+                            </p>
+                            <p>
+                                <a target="_blank" href="{{ place["properties"]["url"] }}">Site Internet</a>
+                            </p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% block javascripts %}{% endblock %}
+        </main>
+    </body>
+</html>
